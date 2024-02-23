@@ -13,12 +13,12 @@ import (
 )
 
 type createUserRequest struct {
-	FistName string `json:"fistName" binding:"required,alphanum"`
-	LastName string `json:"lastName" binding:"required,alphanum"`
-	Username string `json:"username" binding:"required,alphanum"`
-	UserType string `json:"userType" binding:"required,alphanum"`
-	Password string `json:"password" binding:"required,min=6"`
-	Email    string `json:"email" binding:"required,email"`
+	FirstName string `json:"firstName" binding:"required,alphanum"`
+	LastName  string `json:"lastName" binding:"required,alphanum"`
+	Username  string `json:"username" binding:"required,alphanum"`
+	UserType  string `json:"userType" binding:"required,alphanum"`
+	Password  string `json:"password" binding:"required,min=6"`
+	Email     string `json:"email" binding:"required,email"`
 }
 
 type loginUserRequest struct {
@@ -33,7 +33,7 @@ type loginUserResponse struct {
 
 type userResponse struct {
 	Id                string    `json:"id"`
-	FistName          string    `json:"firstName"`
+	FirstName         string    `json:"firstName"`
 	LastName          string    `json:"lastName"`
 	Username          string    `json:"username"`
 	Email             string    `json:"email"`
@@ -45,7 +45,7 @@ type userResponse struct {
 func NewUserResponse(u db.User) userResponse {
 	return userResponse{
 		Id:                u.Id,
-		FistName:          u.FistName,
+		FirstName:         u.FirstName,
 		LastName:          u.LastName,
 		Username:          u.Username,
 		UserType:          u.UserType,
@@ -70,7 +70,7 @@ func (s *Server) createUser(ctx *gin.Context) {
 	}
 
 	arg := db.CreateUserParams{
-		FistName:       req.FistName,
+		FirstName:      req.FirstName,
 		LastName:       req.LastName,
 		Username:       req.Username,
 		UserType:       req.UserType,

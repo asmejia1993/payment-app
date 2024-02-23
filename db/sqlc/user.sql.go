@@ -20,7 +20,7 @@ WHERE email = $1 LIMIT 1
 `
 
 type CreateUserParams struct {
-	FistName       string `json:"fistName"`
+	FirstName      string `json:"firstName"`
 	LastName       string `json:"lastName"`
 	Email          string `json:"email"`
 	Username       string `json:"username"`
@@ -35,7 +35,7 @@ type LoginParams struct {
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
 	row := q.db.QueryRowContext(ctx, createUser,
-		arg.FistName,
+		arg.FirstName,
 		arg.LastName,
 		arg.Email,
 		arg.Username,
@@ -46,7 +46,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	var u User
 	err := row.Scan(
 		&u.Id,
-		&u.FistName,
+		&u.FirstName,
 		&u.LastName,
 		&u.Email,
 		&u.Username,
@@ -64,7 +64,7 @@ func (q *Queries) GetUser(ctx context.Context, email string) (User, error) {
 	var u User
 	err := row.Scan(
 		&u.Id,
-		&u.FistName,
+		&u.FirstName,
 		&u.LastName,
 		&u.Email,
 		&u.Username,

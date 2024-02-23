@@ -14,7 +14,7 @@ var UserTypeEnum UserType = UserType{
 
 type User struct {
 	Id                string    `json:"id"`
-	FistName          string    `json:"firstName"`
+	FirstName         string    `json:"firstName"`
 	LastName          string    `json:"lastName"`
 	Username          string    `json:"username"`
 	Email             string    `json:"email"`
