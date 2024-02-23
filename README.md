@@ -16,6 +16,13 @@ This is a simple simulation of a bank API service that can store user informatio
 |Transaction:Details|`http://localhost:8080/api/v1/payments/transaction/:id`        |`GET`  |
 |Log Monitor        |`http://localhost:8083`                                        |`GET`  |
 
+## Stack
+
+- Go 1.19 (Gin)
+- PostgreSQL
+- Docker & docker-compose for local development
+- Aysnqmon for monitoring tools
+
 ## Running app
 
 ```git
