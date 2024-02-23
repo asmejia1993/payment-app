@@ -19,7 +19,7 @@ func main() {
 	fmt.Printf("connection: %s", config.DBSource)
 	conn, err := sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
-		log.Fatal("can not connect to DB:", err)
+		log.Fatal("cannot connect to DB:", err)
 	}
 	if err := conn.Ping(); err != nil {
 		fmt.Printf("error connecting to db: %v", err)
@@ -32,8 +32,7 @@ func main() {
 		log.Fatal("failed to create server", err)
 	}
 
-	if err := server.Start(config.ServerAddress); err != nil {
-		log.Fatal("Failed to start server")
+	if err := server.Run(config.ServerAddress); err != nil {
+		log.Fatal("failed to start server")
 	}
-
 }

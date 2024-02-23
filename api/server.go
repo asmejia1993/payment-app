@@ -1,8 +1,14 @@
 package api
 
 import (
+	"context"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 
 	"github.com/asmejia1993/payment-app/async"
 	"github.com/asmejia1993/payment-app/bank"
@@ -49,11 +55,7 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 func (server *Server) setupRouter() {
 	router := gin.Default()
 
-	router.GET("/health", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{"status": "OK"})
-	})
-
-	router.GET("/monitoring/tasks/*wildcard", server.monitor)
+	router.GET("/health", server.health)
 	router.POST("/auth/register", server.createUser)
 	router.POST("/auth/login", server.login)
 	authRoutes := router.Group("/api/v1").Use(addMiddleware(server.tokenMaker))
@@ -64,8 +66,30 @@ func (server *Server) setupRouter() {
 	server.router = router
 }
 
-func (server *Server) Start(address string) error {
-	return server.router.Run(address)
+func (server *Server) Run(address string) error {
+	srv := &http.Server{
+		Addr:    address,
+		Handler: server.router,
+	}
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("listen: %s\n", err)
+		}
+	}()
+
+	stopServer := make(chan os.Signal, 1)
+	signal.Notify(stopServer, syscall.SIGINT, syscall.SIGTERM)
+	<-stopServer
+	server.asynq.Close()
+	log.Println("server shut down gracefully ...")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		return fmt.Errorf("server shutdown: %v", err)
+	}
+	log.Println("Server exiting")
+	return nil
 }
 
 func errorResponse(err error) gin.H {

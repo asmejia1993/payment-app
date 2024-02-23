@@ -40,7 +40,6 @@ func NewAsynqClient(config util.Config, log *logrus.Logger) Queuer {
 
 // Enqueue new event log.
 func (a AsyncLog) Enqueue(payload AuditLogEntry, taskType string) error {
-	defer a.asynq.Close()
 	req, err := json.Marshal(payload)
 	if err != nil {
 		msg := fmt.Errorf("failed to serialize payload: %v", err)
@@ -56,4 +55,10 @@ func (a AsyncLog) Enqueue(payload AuditLogEntry, taskType string) error {
 	}
 	a.log.Infof("enqueued task: id=%s queue=%s", info.ID, info.Queue)
 	return nil
+}
+
+// Close queues and redis connection
+func (a AsyncLog) Close() {
+	a.log.Info("closing asynq gracefully ...")
+	a.asynq.Close()
 }
